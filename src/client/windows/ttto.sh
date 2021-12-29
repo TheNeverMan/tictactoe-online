@@ -46,9 +46,11 @@ play()
     read MOVE
     while busybox [[ $ALLOWED == n ]]
     do
-    	if busybox [[ "" == $(echo $YOUR_MOVES | busybox grep $MOVE) ]]; then
+      Y=$(echo $YOUR_MOVES | busybox grep $MOVE)
+      E=$(echo $ENEMY_MOVES | busybox grep $MOVE)
+    	if busybox [[ "" == $Y ]]; then
     		ALLOWED=y
-    		if busybox [[ "" == $(echo $ENEMY_MOVES | busybox grep $MOVE) ]]; then
+    		if busybox [[ "" == $E ]]; then
     			ALLOWED=y
     		else
     			ALLOWED=n
@@ -67,8 +69,7 @@ play()
     		read MOVE
     	fi
     done
-    YOUR_MOVES+=$(echo $MOVE)
-    YOUR_MOVES+=" "
+    YOUR_MOVES=$YOUR_MOVES" "$MOVE
     RESULT=$(busybox wget -qO- "$SERVER/move.php?pid=$PLAYER_ID&gid=$GAME_ID&move=$MOVE")
   done
 }
@@ -106,10 +107,12 @@ waitformove()
 
 printtile()
 {
-  if busybox [[ "" != $(echo $YOUR_MOVES | busybox grep $VAL) ]]; then
+  Y=$(echo $YOUR_MOVES | busybox grep $VAL)
+  E=$(echo $ENEMY_MOVES | busybox grep $VAL)
+  if busybox [[ "" != $Y ]]; then
     echo -n X
     echo -n ' '
-  elif busybox [[ "" != $(echo $ENEMY_MOVES | busybox grep $VAL) ]]; then
+  elif busybox [[ "" != $E ]]; then
     echo -n O
     echo -n ' '
   else
@@ -122,7 +125,7 @@ printboard()
 {
   ENEMY_MOVES=$(busybox wget -qO- "$SERVER/getenemymoves.php?pid=$PLAYER_ID&gid=$GAME_ID")
   VAL=1
-  while [ $VAL -lt 10 ]
+  while [ "$VAL" -lt 10 ]
   do
     printtile
     if busybox [[ $(($VAL % 3)) == 0 ]]; then

@@ -81,27 +81,27 @@ waitformove()
   while [ 1 = 1 ]
   do
     CAN_MOVE=$(busybox wget -qO- "$SERVER/canmove.php?pid=$PLAYER_ID&gid=$GAME_ID")
-    if busybox [[ $CAN_MOVE == won ]]; then
+    if busybox [[ "$CAN_MOVE" == "won" ]]; then
       RETURNED_VALUE=won
       return 0
     fi
-    if busybox [[ $CAN_MOVE == draw ]]; then
+    if busybox [[ "$CAN_MOVE" == "draw" ]]; then
       RETURNED_VALUE=draw
       return 0
     fi
-    if busybox [[ $CAN_MOVE == lost ]]; then
+    if busybox [[ "$CAN_MOVE" == "lost" ]]; then
       RETURNED_VALUE=lost
       return 0
     fi
-    if busybox [[ $CAN_MOVE == nogm ]]; then
+    if busybox [[ "$CAN_MOVE" == "nogm" ]]; then
       RETURNED_VALUE=nogm
       return 0
     fi
-    if busybox [[ $CAN_MOVE == ok ]]; then
+    if busybox [[ "$CAN_MOVE" == "ok" ]]; then
       RETURNED_VALUE=ok
       return 0
     fi
-    sleep 1
+    busybox sleep 1
   done
 }
 

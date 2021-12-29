@@ -22,19 +22,19 @@ play()
   do
     echo "Waiting for your turn..."
     waitformove
-    if busybox [[ $RETURNED_VALUE == won ]]; then
+    if busybox [[ "$RETURNED_VALUE" == "won" ]]; then
       echo "You have won"
       return 0
     fi
-    if busybox [[ $RETURNED_VALUE == draw ]]; then
+    if busybox [[ "$RETURNED_VALUE" == "draw" ]]; then
       echo "Draw"
       return 0
     fi
-    if busybox [[ $RETURNED_VALUE == lost ]]; then
+    if busybox [[ "$RETURNED_VALUE" == "lost" ]]; then
       echo "You have lost"
       return 0
     fi
-    if busybox [[ $RETURNED_VALUE == nogm ]]; then
+    if busybox [[ "$RETURNED_VALUE" == "nogm" ]]; then
       echo "Missing game"
       return 0
     fi

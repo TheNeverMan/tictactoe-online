@@ -203,14 +203,14 @@ if($result)
         //player currently moving has won the game
         //echo "$player_elo $enemy_elo $diff";
         $player_elo = $player_elo + ($diff / 10 * $enemy_elo / $player_elo);
-        $enemy_elo = $enemy_elo - ($diff / 9 * $enemy_elo / $player_elo);
+        $enemy_elo = $enemy_elo - ($diff / 11 * $enemy_elo / $player_elo);
       }
       else
       {
         //player currently moving has lost the game
         //jecho "$player_elo $enemy_elo $diff";
-        $player_elo = $player_elo - ($diff / 9 * $enemy_elo / $player_elo);
-        $enemy_elo = $enemy_elo + ($diff / 10 * $enemy_elo / $player_elo);
+        $player_elo = $player_elo - ($diff / 11 * $player_elo / $enemy_elo);
+        $enemy_elo = $enemy_elo + ($diff / 10 * $player_elo / $enemy_elo);
       }
       $query = "UPDATE games SET status = 'ended', winner = '" . $row['player1'] . "' WHERE id = '" . $game_id . "'";
       $conn->query($query);
@@ -221,15 +221,15 @@ if($result)
       {
         //player currently moving has lost the game
         //e//cho "$player_elo $enemy_elo $diff";
-        $player_elo = $player_elo - ($diff / 9 * $enemy_elo / $player_elo);
-        $enemy_elo = $enemy_elo + ($diff / 10 * $enemy_elo / $player_elo);
+        $player_elo = $player_elo - ($diff / 11 * $player_elo / $enemy_elo);
+        $enemy_elo = $enemy_elo + ($diff / 10 * $player_elo / $enemy_elo);
       }
       else
       {
         //player currently moving has won the game
         //echo "$player_elo $enemy_elo $diff";
         $player_elo = $player_elo + ($diff / 10 * $enemy_elo / $player_elo);
-        $enemy_elo = $enemy_elo - ($diff / 9 * $enemy_elo / $player_elo);
+        $enemy_elo = $enemy_elo - ($diff / 11 * $enemy_elo / $player_elo);
       }
       $query = "UPDATE games SET status = 'ended', winner = '" . $row['player2'] . "' WHERE id = '" . $game_id . "'";
       $conn->query($query);

@@ -168,7 +168,7 @@ if busybox [[ -e ./id.ttto ]]; then
   PLAYER_ID=$(cat ./id.ttto)
 else
   PLAYER_ID=$(busybox printf $(busybox date | busybox head -n2 | busybox sha256sum))
-  touch ./id.ttto
+  busybox touch ./id.ttto
   echo -n $PLAYER_ID >> ./id.ttto
 fi
 #get server ip
@@ -181,7 +181,7 @@ if busybox [[ $? != 0 ]]; then
 fi
 #check ver
 MIN_SUP_VER=$(busybox wget -qO- $SERVER/minsupver.php)
-LONG_MIN_SUP_VER=$(echo -n 0x;printf '%x\n' $MIN_SUP_VER)
+LONG_MIN_SUP_VER=$(echo -n 0x;busybox printf '%x\n' $MIN_SUP_VER)
 if [ "$VERSION" -lt "$MIN_SUP_VER" ]; then
   echo "Client is outdated, please update to version $LONG_MIN_SUP_VER"
   exit 0

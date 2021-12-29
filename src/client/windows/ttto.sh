@@ -56,7 +56,10 @@ play()
     	else
     		ALLOWED=n
     	fi
-    	if (( $MOVE > 9  || $MOVE < 1)); then
+    	if [ "$MOVE" -gt 9 ];then
+        ALLOWED=n
+      fi
+      if [ "$MOVE" -lt 1 ]; then
     		ALLOWED=n
     	fi
     	if busybox [[ $ALLOWED == n ]]; then
@@ -119,10 +122,10 @@ printboard()
 {
   ENEMY_MOVES=$(busybox wget -qO- "$SERVER/getenemymoves.php?pid=$PLAYER_ID&gid=$GAME_ID")
   VAL=1
-  while (($VAL < 10))
+  while [ $VAL -lt 10 ]
   do
     printtile
-    if (($VAL % 3 == 0)); then
+    if busybox [[ $(($VAL % 3)) == 0 ]]; then
       echo
     fi
     VAL=$((VAL+1))
@@ -179,7 +182,7 @@ fi
 #check ver
 MIN_SUP_VER=$(busybox wget -qO- $SERVER/minsupver.php)
 LONG_MIN_SUP_VER=$(echo -n 0x;printf '%x\n' $MIN_SUP_VER)
-if (( $VERSION < $MIN_SUP_VER )); then
+if [ "$VERSION" -lt "$MIN_SUP_VER" ]; then
   echo "Client is outdated, please update to version $LONG_MIN_SUP_VER"
   exit 0
 fi

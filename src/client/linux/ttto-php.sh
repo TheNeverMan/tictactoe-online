@@ -156,7 +156,7 @@ menu()
     fi
   done
 }
-VERSION=1
+VERSION=2
 VER_LONG=$(echo -n 0x;printf '%x\n' $VERSION)
 echo "Welcome to Tic Tac Toe Online (ver. $VER_LONG)"
 #check if id file is present and generate one if not
@@ -195,4 +195,7 @@ else
   USERNAME=$(echo $IS_USERNAME_REG)
   echo Logged as $USERNAME
 fi
+#messages
+echo "Messages:"
+wget -qO- "$SERVER/getmessages.php"
 menu

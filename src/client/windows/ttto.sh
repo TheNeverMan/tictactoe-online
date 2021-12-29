@@ -165,7 +165,7 @@ echo "Welcome to Tic Tac Toe Online (ver. $VER_LONG)"
 #check if id file is present and generate one if not
 PLAYER_ID=yes
 if busybox [[ -e ./id.ttto ]]; then
-  PLAYER_ID=$(cat ./id.ttto)
+  PLAYER_ID=$(busybox cat ./id.ttto)
 else
   PLAYER_ID=$(busybox printf $(busybox date | busybox head -n2 | busybox sha256sum))
   busybox touch ./id.ttto

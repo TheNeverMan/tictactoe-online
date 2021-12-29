@@ -12,7 +12,7 @@ play()
   echo Joined $GAME_ID game
   while [ 1 = 1 ]; do
     OUT=$(busybox wget -qO- $SERVER/isconnected.php?gid=$GAME_ID)
-    if busybox [[ $OUT == "ok" ]]; then
+    if busybox [[ "$OUT" == "ok" ]]; then
       break
     fi
   done
@@ -44,13 +44,13 @@ play()
     MOVE=0
     ALLOWED=n
     read MOVE
-    while busybox [[ $ALLOWED == n ]]
+    while busybox [[ "$ALLOWED" == n ]]
     do
       Y=$(echo $YOUR_MOVES | busybox grep $MOVE)
       E=$(echo $ENEMY_MOVES | busybox grep $MOVE)
-    	if busybox [[ "" == $Y ]]; then
+    	if busybox [[ "" == "$Y" ]]; then
     		ALLOWED=y
-    		if busybox [[ "" == $E ]]; then
+    		if busybox [[ "" == "$E" ]]; then
     			ALLOWED=y
     		else
     			ALLOWED=n
@@ -58,13 +58,13 @@ play()
     	else
     		ALLOWED=n
     	fi
-    	if [ "$MOVE" -gt 9 ];then
+    	if [ "$MOVE" -gt 9 ]; then
         ALLOWED=n
       fi
       if [ "$MOVE" -lt 1 ]; then
     		ALLOWED=n
     	fi
-    	if busybox [[ $ALLOWED == n ]]; then
+    	if busybox [[ "$ALLOWED" == n ]]; then
     		echo "This move is not allowed, please move somewhere else:"
     		read MOVE
     	fi
@@ -109,10 +109,10 @@ printtile()
 {
   Y=$(echo $YOUR_MOVES | busybox grep $VAL)
   E=$(echo $ENEMY_MOVES | busybox grep $VAL)
-  if busybox [[ "" != $Y ]]; then
+  if busybox [[ "" != "$Y" ]]; then
     echo -n X
     echo -n ' '
-  elif busybox [[ "" != $E ]]; then
+  elif busybox [[ "" != "$E" ]]; then
     echo -n O
     echo -n ' '
   else
@@ -138,25 +138,25 @@ printboard()
 menu()
 {
   RESPONSE=z
-  while busybox [[ $RESPONSE != e ]]; do
+  while busybox [[ "$RESPONSE" != e ]]; do
     echo "press key to choose option:"
     echo "p - play"
     echo "i - info"
     echo "r - ranking"
     echo "e - exit"
     read RESPONSE
-    if busybox [[ $RESPONSE == p ]]; then
+    if busybox [[ "$RESPONSE" == p ]]; then
       play
     fi
-    if busybox [[ $RESPONSE == r ]]; then
+    if busybox [[ "$RESPONSE" == r ]]; then
       echo PLAYER ELO
-      busybox wget -qO- $SERVER/ranking.php
+      busybox wget -qO- "$SERVER/ranking.php"
     fi
-    if busybox [[ $RESPONSE == i ]]; then
+    if busybox [[ "$RESPONSE" == i ]]; then
       ELO=$(busybox wget -qO- $SERVER/getplayerelo.php?pid=$PLAYER_ID)
       echo Username $USERNAME Elo $ELO
     fi
-    if busybox [[ $RESPONSE == e ]]; then
+    if busybox [[ "$RESPONSE" == e ]]; then
       echo Bye
       exit 0
     fi

@@ -10,6 +10,11 @@ play()
   YOUR_MOVES=" "
   ENEMY_MOVES=" "
   echo Joined $GAME_ID game
+  echo "Board:"
+  echo "1 2 3"
+  echo "4 5 6"
+  echo "7 8 9"
+  echo "Good luck!"
   while [ 1 = 1 ]; do
     OUT=$(busybox wget -qO- $SERVER/isconnected.php?gid=$GAME_ID)
     if busybox [[ "$OUT" == "ok" ]]; then
@@ -143,6 +148,7 @@ menu()
     echo "p - play"
     echo "i - info"
     echo "r - ranking"
+    echo "v - version"
     echo "e - exit"
     read RESPONSE
     if busybox [[ "$RESPONSE" == p ]]; then
@@ -156,13 +162,16 @@ menu()
       ELO=$(busybox wget -qO- $SERVER/getplayerelo.php?pid=$PLAYER_ID)
       echo Username $USERNAME Elo $ELO
     fi
+    if busybox [[ "$RESPONSE" == v ]]; then
+      echo "Tic Tac Toe Online Client version $VER_LONG"
+    fi
     if busybox [[ "$RESPONSE" == e ]]; then
       echo Bye
       exit 0
     fi
   done
 }
-VERSION=2
+VERSION=3
 VER_LONG=$(echo -n 0x;busybox printf '%x\n' $VERSION)
 echo "Welcome to Tic Tac Toe Online (ver. $VER_LONG)"
 #check if id file is present and generate one if not
@@ -194,8 +203,10 @@ USERNAME=yes
 IS_USERNAME_REG=$(busybox wget -qO- $SERVER/getplayer.php?pid=$PLAYER_ID)
 
 if busybox [[ -z $IS_USERNAME_REG ]]; then
-  echo "No account has been found on server. Please enter username to register:"
+  echo "No account has been found on server. Please enter username to register (username must not contains spaces or special characters, also it must be less than 32 chars long):"
   read USERNAME
+  USERNAME=$(echo $USERNAME | busybox awk '{ gsub (" ","", $0); print}')
+  USERNAME=$(echo $USERNAME | busybox head -c 32)
   busybox wget -qO- "$SERVER/addplayer.php?pid=$PLAYER_ID&un=$USERNAME"
 else
   USERNAME=$(echo $IS_USERNAME_REG)

@@ -10,6 +10,11 @@ play()
   YOUR_MOVES=" "
   ENEMY_MOVES=" "
   echo Joined $GAME_ID game
+  echo "Board:"
+  echo "1 2 3"
+  echo "4 5 6"
+  echo "7 8 9"
+  echo "Good luck!"
   while true; do
     OUT=$(wget -qO- $SERVER/isconnected.php?gid=$GAME_ID)
     if [[ $OUT == "ok" ]]; then
@@ -137,6 +142,7 @@ menu()
     echo "p - play"
     echo "i - info"
     echo "r - ranking"
+    echo "v - version"
     echo "e - exit"
     read RESPONSE
     if [[ $RESPONSE == p ]]; then
@@ -150,13 +156,16 @@ menu()
       ELO=$(wget -qO- $SERVER/getplayerelo.php?pid=$PLAYER_ID)
       echo Username $USERNAME Elo $ELO
     fi
+    if [[ $RESPONSE == v ]]; then
+      echo "Tic Tac Toe Online Client version $VER_LONG"
+    fi
     if [[ $RESPONSE == e ]]; then
       echo Bye
       exit 0
     fi
   done
 }
-VERSION=2
+VERSION=3
 VER_LONG=$(echo -n 0x;printf '%x\n' $VERSION)
 echo "Welcome to Tic Tac Toe Online (ver. $VER_LONG)"
 #check if id file is present and generate one if not
@@ -188,8 +197,11 @@ USERNAME=yes
 IS_USERNAME_REG=$(wget -qO- $SERVER/getplayer.php?pid=$PLAYER_ID)
 
 if [[ -z $IS_USERNAME_REG ]]; then
-  echo "No account has been found on server. Please enter username to register:"
+  echo "No account has been found on server. Please enter username to register (username must not contains spaces or special characters, also it must be less than 32 chars long):"
   read USERNAME
+  #remove spaces they cause bad request errors on wget
+  USERNAME=$(echo $USERNAME | busybox awk '{ gsub (" ","", $0); print}')
+  USERNAME=$(echo $USERNAME | busybox head -c 32)
   wget -qO- "$SERVER/addplayer.php?pid=$PLAYER_ID&un=$USERNAME"
 else
   USERNAME=$(echo $IS_USERNAME_REG)

@@ -30,12 +30,12 @@ if ($conn->connect_error) {
 }
 $query = "USE id18164401_ttto";
 $result = $conn->query($query);
-$query = "INSERT INTO players (id, username, elo) VALUES ('" . $id . "', '" . $username . "', 1000)";
+$query = "INSERT INTO players(id, username, elo, ranks) VALUES ('$id', '$username', 1000, 'e[0m')";
 $result = $conn->query($query);
 if (!$result)
 {
+  echo $conn->error;
   $conn->close();
-  echo $result->error;
 	die();
 }
 else {

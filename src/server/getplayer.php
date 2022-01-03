@@ -23,14 +23,14 @@ if ($conn->connect_error) {
 }
 $query = "USE id18164401_ttto";
 $result = $conn->query($query);
-$query = "SELECT username FROM players WHERE id = '" . $id . "'";
+$query = "SELECT * FROM players WHERE id = '" . $id . "'";
 $result = $conn->query($query);
 if (!$result)
 {
 	die();
 }
 while($row = $result->fetch_assoc()) {
-    echo $row['username'];
+    echo  "\\" . $row['ranks'] . $row['username'] . "\\e[0m";
 }
 $conn->close();
 ?>

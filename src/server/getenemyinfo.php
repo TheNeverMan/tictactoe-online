@@ -47,7 +47,7 @@ if($result)
         $row2 = $result2->fetch_assoc();
         if($result2)
         {
-          echo $row2['username'] . " (ELO " . $row2['elo'] . ")";
+          echo "\\" . $row2['ranks'] . $row2['username'] . "\\e[0m" . " (ELO " . $row2['elo'] . ")";
         }
         $conn->close();
         die();
@@ -59,7 +59,7 @@ if($result)
         $row2 = $result2->fetch_assoc();
         if($result2)
         {
-          echo $row2['username'] . " (ELO " . $row2['elo'] . ")";
+          echo "\\" . $row2['ranks'] . $row2['username'] . "\\e[0m" . " (ELO " . $row2['elo'] . ")";
         }
         $conn->close();
         die();

@@ -22,7 +22,7 @@ play()
     fi
   done
   ENEMY_IS=$(wget -qO- "$SERVER/getenemyinfo.php?pid=$PLAYER_ID&gid=$GAME_ID")
-  echo "Playing with $ENEMY_IS"
+  busybox echo -e "Playing with $ENEMY_IS"
   while true
   do
     echo "Waiting for your turn..."
@@ -142,19 +142,28 @@ menu()
     echo "p - play"
     echo "i - info"
     echo "r - ranking"
+    echo "a - ranks"
     echo "v - version"
     echo "e - exit"
     read RESPONSE
     if [[ $RESPONSE == p ]]; then
       play
     fi
+    if [[ $RESPONSE == a ]]; then
+      echo "Available Ranks:"
+      busybox echo -e "\e[1;34mPremium \e[0m- you can ask me for it"
+      busybox echo -e "\e[1;33mAdmin \e[0m- you can't get it"
+      busybox echo -e "\e[1;32mTester\\Dev \e[0m- you need to be tester to get it"
+      busybox echo -e "\e[1;31mSpecial \e[0m- this is special rank"
+    fi
     if [[ $RESPONSE == r ]]; then
       echo PLAYER ELO
-      wget -qO- $SERVER/ranking.php
+      ranking_to_print=$(wget -qO- $SERVER/ranking.php)
+      busybox echo -e $ranking_to_print
     fi
     if [[ $RESPONSE == i ]]; then
       ELO=$(wget -qO- $SERVER/getplayerelo.php?pid=$PLAYER_ID)
-      echo Username $USERNAME Elo $ELO
+      busybox echo -e Username $USERNAME Elo $ELO
     fi
     if [[ $RESPONSE == v ]]; then
       echo "Tic Tac Toe Online Client version $VER_LONG"
@@ -165,7 +174,7 @@ menu()
     fi
   done
 }
-VERSION=3
+VERSION=4
 VER_LONG=$(echo -n 0x;printf '%x\n' $VERSION)
 echo "Welcome to Tic Tac Toe Online (ver. $VER_LONG)"
 #check if id file is present and generate one if not
@@ -189,7 +198,7 @@ fi
 MIN_SUP_VER=$(wget -qO- $SERVER/minsupver.php)
 LONG_MIN_SUP_VER=$(echo -n 0x;printf '%x\n' $MIN_SUP_VER)
 if (( $VERSION < $MIN_SUP_VER )); then
-  echo "Client is outdated, please update to version $LONG_MIN_SUP_VER"
+  echo "Client is outdated, please update to version $LONG_MIN_SUP_VER, you can download it from https://github.com/TheNeverMan/tictactoe-online"
   exit 0
 fi
 #get username and register if not present
@@ -205,7 +214,7 @@ if [[ -z $IS_USERNAME_REG ]]; then
   wget -qO- "$SERVER/addplayer.php?pid=$PLAYER_ID&un=$USERNAME"
 else
   USERNAME=$(echo $IS_USERNAME_REG)
-  echo Logged as $USERNAME
+  busybox echo -e Logged as $USERNAME
 fi
 #messages
 echo "Messages:"

@@ -86,15 +86,6 @@ if($result)
     $query = "SELECT * FROM games WHERE id = '" . $game_id . "'";
     $result = $conn->query($query);
     $row = $result->fetch_assoc();
-    //draw
-    if(strlen($row['total']) >= 9)
-    {
-      $querydraw = "UPDATE games SET status = 'ended', winner = 'draw' WHERE id = '" . $game_id . "'";
-      $res = $conn->query($querydraw);
-      echo "ok";
-      $conn->close();
-      die();
-    }
     $wonby1 = false;
     $wonby2 = false;
     if( (strpos($row['moves1'], strval(1)) !== false) && (strpos($row['moves1'], strval(2)) !== false) && (strpos($row['moves1'], strval(3)) !== false))
@@ -190,6 +181,15 @@ if($result)
     $diff = abs($player_elo - $enemy_elo) + 400;
     if($wonby1 == false && $wonby2 == false)
     {
+      //draw
+      if(strlen($row['total']) >= 9)
+      {
+        $querydraw = "UPDATE games SET status = 'ended', winner = 'draw' WHERE id = '" . $game_id . "'";
+        $res = $conn->query($querydraw);
+        echo "ok";
+        $conn->close();
+        die();
+      }
       $query = "UPDATE games SET moving = '" . $enemy_id . "' WHERE id = '" . $game_id . "'";
       $conn->query($query);
       $conn->close();

@@ -22,7 +22,7 @@ play()
     fi
   done
   ENEMY_IS=$(busybox wget -qO- "$SERVER/getenemyinfo.php?pid=$PLAYER_ID&gid=$GAME_ID")
-  echo "Playing with $ENEMY_IS"
+  busybox echo -e "Playing with $ENEMY_IS"
   while [ 1 = 1 ]
   do
     echo "Waiting for your turn..."
@@ -49,6 +49,8 @@ play()
     MOVE=0
     ALLOWED=n
     read MOVE
+    #reduce move to one char (no need for more)
+    MOVE=$(echo $MOVE | busybox head -c 1)
     while busybox [[ "$ALLOWED" == n ]]
     do
       Y=$(echo $YOUR_MOVES | busybox grep $MOVE)
@@ -148,19 +150,28 @@ menu()
     echo "p - play"
     echo "i - info"
     echo "r - ranking"
+    echo "a - ranks"
     echo "v - version"
     echo "e - exit"
     read RESPONSE
     if busybox [[ "$RESPONSE" == p ]]; then
       play
     fi
+    if busybox [[ "$RESPONSE" == a ]]; then
+      echo "Available Ranks:"
+      busybox echo -e "\e[1;34mPremium \e[0m- you can ask me for it"
+      busybox echo -e "\e[1;33mAdmin \e[0m- you can't get it"
+      busybox echo -e "\e[1;32mTester\\Dev \e[0m- you need to be tester to get it"
+      busybox echo -e "\e[1;31mSpecial \e[0m- this is special rank"
+    fi
     if busybox [[ "$RESPONSE" == r ]]; then
       echo PLAYER ELO
-      busybox wget -qO- "$SERVER/ranking.php"
+      ranking_to_print=$(wget -qO- $SERVER/ranking.php)
+      busybox echo -e $ranking_to_print
     fi
     if busybox [[ "$RESPONSE" == i ]]; then
       ELO=$(busybox wget -qO- $SERVER/getplayerelo.php?pid=$PLAYER_ID)
-      echo Username $USERNAME Elo $ELO
+      busybox echo -e Username $USERNAME Elo $ELO
     fi
     if busybox [[ "$RESPONSE" == v ]]; then
       echo "Tic Tac Toe Online Client version $VER_LONG"
@@ -171,7 +182,7 @@ menu()
     fi
   done
 }
-VERSION=3
+VERSION=4
 VER_LONG=$(echo -n 0x;busybox printf '%x\n' $VERSION)
 echo "Welcome to Tic Tac Toe Online (ver. $VER_LONG)"
 #check if id file is present and generate one if not
@@ -210,7 +221,7 @@ if busybox [[ -z $IS_USERNAME_REG ]]; then
   busybox wget -qO- "$SERVER/addplayer.php?pid=$PLAYER_ID&un=$USERNAME"
 else
   USERNAME=$(echo $IS_USERNAME_REG)
-  echo Logged as $USERNAME
+  busybox echo -e Logged as $USERNAME
 fi
 #messages
 echo "Messages:"

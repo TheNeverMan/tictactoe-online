@@ -166,7 +166,7 @@ menu()
     fi
     if busybox [[ "$RESPONSE" == r ]]; then
       echo PLAYER ELO
-      ranking_to_print=$(wget -qO- $SERVER/ranking.php)
+      ranking_to_print=$(busybox wget -qO- $SERVER/ranking.php)
       busybox echo -e $ranking_to_print
     fi
     if busybox [[ "$RESPONSE" == i ]]; then

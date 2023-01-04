@@ -17,7 +17,7 @@ play()
   busybox echo "4 5 6"
   busybox echo "7 8 9"
   busybox echo "Good luck!"
-  while true
+  while 1
   do
     OUT=$(busybox wget -qO- "$SERVER/isconnected.php?gid=$GAME_ID")
     if busybox [[ "$OUT" == "ok" ]]; then
@@ -26,7 +26,7 @@ play()
   done
   ENEMY_IS=$(busybox wget -qO- "$SERVER/getenemyinfo.php?pid=$PLAYER_ID&gid=$GAME_ID")
   busybox echo -e "Playing with $ENEMY_IS"
-  while true
+  while 1
   do
     echo "Waiting for your turn..."
     waitformove
@@ -94,7 +94,7 @@ waitformove()
 {
   CAN_MOVE=no
   RETURNED_VALUE=no
-  while true
+  while 1
   do
     CAN_MOVE=$(busybox wget -qO- "$SERVER/canmove.php?pid=$PLAYER_ID&gid=$GAME_ID")
     if busybox [[ "$CAN_MOVE" == "won" ]]; then
@@ -199,7 +199,7 @@ PLAYER_ID=yes
 if busybox [[ -e ./id.ttto ]]; then
   PLAYER_ID=$(busybox cat ./id.ttto)
 else
-  PLAYER_ID=$(busybox printf "$(busybox date | busybox head -n2 | busybox sha256sum)")
+  PLAYER_ID=$(busybox printf $(busybox date | busybox head -n2 | busybox sha256sum))
   busybox touch ./id.ttto
   echo -n "$PLAYER_ID" >> ./id.ttto
 fi
@@ -218,7 +218,7 @@ busybox echo "$SERVER is selected server"
 
 #check ver
 MIN_SUP_VER=$(busybox wget -qO- "$SERVER/minsupver.php")
-LONG_MIN_SUP_VER=$(echo -n 0x;busybox printf '%x\n' "$MIN_SUP_VER")
+LONG_MIN_SUP_VER=$(busybox echo -n 0x;busybox printf '%x\n' "$MIN_SUP_VER")
 if [ "$VERSION" -lt "$MIN_SUP_VER" ]; then
   echo "Client is outdated, please update to version $LONG_MIN_SUP_VER"
   read -r A
@@ -231,8 +231,8 @@ IS_USERNAME_REG=$(busybox wget -qO- "$SERVER/getplayer.php?pid=$PLAYER_ID")
 if busybox [[ -z "$IS_USERNAME_REG" ]]; then
   echo "No account has been found on server. Please enter username to register (username must not contains spaces or special characters, also it must be less than 32 chars long):"
   read -r USERNAME
-  USERNAME=$(echo "$USERNAME" | busybox awk '{ gsub (" ","", $0); print}')
-  USERNAME=$(echo "$USERNAME" | busybox head -c 32)
+  USERNAME=$(busybox echo "$USERNAME" | busybox awk '{ gsub (" ","", $0); print}')
+  USERNAME=$(busybox echo "$USERNAME" | busybox head -c 32)
   busybox wget -qO- "$SERVER/addplayer.php?pid=$PLAYER_ID&un=$USERNAME"
 else
   USERNAME=$IS_USERNAME_REG

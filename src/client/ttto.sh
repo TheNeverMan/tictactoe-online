@@ -17,7 +17,7 @@ play()
   busybox echo "4 5 6"
   busybox echo "7 8 9"
   busybox echo "Good luck!"
-  while 1
+  while busybox true
   do
     OUT=$(busybox wget -qO- "$SERVER/isconnected.php?gid=$GAME_ID")
     if busybox [[ "$OUT" == "ok" ]]; then
@@ -26,7 +26,7 @@ play()
   done
   ENEMY_IS=$(busybox wget -qO- "$SERVER/getenemyinfo.php?pid=$PLAYER_ID&gid=$GAME_ID")
   busybox echo -e "Playing with $ENEMY_IS"
-  while 1
+  while busybox true
   do
     echo "Waiting for your turn..."
     waitformove
@@ -94,7 +94,7 @@ waitformove()
 {
   CAN_MOVE=no
   RETURNED_VALUE=no
-  while 1
+  while busybox true
   do
     CAN_MOVE=$(busybox wget -qO- "$SERVER/canmove.php?pid=$PLAYER_ID&gid=$GAME_ID")
     if busybox [[ "$CAN_MOVE" == "won" ]]; then

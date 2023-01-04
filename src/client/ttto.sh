@@ -214,7 +214,7 @@ if busybox [[ $? != 0 ]]; then
 fi
 
 #show server
-busybox echo "$P is selected server"
+busybox echo "$SERVER is selected server"
 
 #check ver
 MIN_SUP_VER=$(busybox wget -qO- "$SERVER/minsupver.php")
@@ -235,7 +235,7 @@ if busybox [[ -z "$IS_USERNAME_REG" ]]; then
   USERNAME=$(echo "$USERNAME" | busybox head -c 32)
   busybox wget -qO- "$SERVER/addplayer.php?pid=$PLAYER_ID&un=$USERNAME"
 else
-  USERNAME=IS_USERNAME_REG
+  USERNAME=$IS_USERNAME_REG
   busybox echo -e "Logged as $USERNAME"
 fi
 #messages
